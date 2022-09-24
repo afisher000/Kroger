@@ -11,9 +11,8 @@ import pandas as pd
 import numpy as np
 import os
 import base64
-from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
-
+import time
+from bs4 import BeautifulSoup
 
 # TO IMPLEMENT:
     # Current goal is just getting all call types figured out
@@ -22,21 +21,82 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 class Kroger():
     def __init__(self):
+        # API constants
+        self.REDIRECT_URI = 'https://localhost/'
         self.CLIENT_ID = os.environ['KROGER_CLIENT_ID']
         self.CLIENT_SECRET = os.environ['KROGER_CLIENT_SECRET']
         self.EMAIL = os.environ['STRAVA_ANDREW_EMAIL']
         self.PASSWORD = os.environ['STRAVA_ANDREW_PASSWORD']
-        self.token = base64.b64encode(f'{self.CLIENT_ID}:{self.CLIENT_SECRET}'.encode()).decode()
-        self.get_access_token()
+        self.ANDREW_KROGER_ID = '817a3d19-7353-5b0b-8e2d-48e87011d6f7'
         
-    def get_access_token(self):
+        # API endpoints
+        self.api = "https://api.kroger.com/v1"
+        self.oauth2_endpoint = self.api + '/connect/oauth2/authorize?'
+        self.access_token_endpoint = self.api + '/connect/oauth2/token'
+        self.products_endpoint = self.api + '/products?'
+        self.locations_endpoint = self.api + '/locations?'
+        self.profile_endpoint = self.api + '/identity/profile'
         
-        # Get access token
-        url = "https://api-ce.kroger.com/v1/connect/oauth2/token"
+        
+        # Get tokens
+        self.get_client_access_token()
+        # self.get_customer_access_token()
+        
+    def create_database(self):
+        # Read products from cart
+        with open('cart.txt','r') as f:
+            html = f.read() 
+            soup = BeautifulSoup(html, 'html.parser')
+        
+        links = []
+        for tag in soup.findAll('a'):
+            if 'href' and 'class' in tag.attrs.keys():
+                if 'kds-Link--implied' and 'ProductDescription-truncated' in tag.attrs['class']:
+                    links.append(tag.attrs['href'])
+        
+        IDs = [link.split('/')[3] for link in links if link.split('/')[3].isdigit()]
+        
+        headers = {
+            'Authorization':f'Bearer {self.client_access_token}',
+            'Cache-Control':'no-cache'
+            }
+        
+        names = []
+        for ID in IDs[:5]:
+            url = self.products_endpoint[:-1] + '/' + ID + '?'
+            print(f'URL:{url}')
+            r = requests.get(url, headers=headers).json()
+            print(f"{r['data']['description']}")
+            names.append(r['data']['description'])
+            
+        self.db_products = pd.Series(data=names, index=IDs[:5])
+        
+    def get_customer_access_token(self):
+        self.authenticate_customer()
         
         headers = {
             'Content-Type':'application/x-www-form-urlencoded',
-            'Authorization':f'Basic {self.token}'
+            'Authorization':f'Basic {self.client_token}'
+            }
+        
+        params = {
+            'grant_type':'authorization_code',
+            'code':self.customer_oauth2_token,
+            'redirect_uri':self.REDIRECT_URI
+            }
+        data = '&'.join(['='.join([key,value]) for key, value in params.items()])
+        r = requests.post(self.access_token_endpoint, headers=headers, data=data).json()
+        self.customer_refresh_token = r['refresh_token']
+        self.customer_access_token = r['access_token']
+        return
+        
+    def get_client_access_token(self):
+        self.client_token = base64.b64encode(f'{self.CLIENT_ID}:{self.CLIENT_SECRET}'.encode()).decode()
+        
+        # Get access token
+        headers = {
+            'Content-Type':'application/x-www-form-urlencoded',
+            'Authorization':'Basic %s'%(self.client_token)
             }
         
         params = {
@@ -44,24 +104,48 @@ class Kroger():
             'scope':'product.compact'
             }
         data = '&'.join(['='.join([key,value]) for key, value in params.items()])
-        r = requests.post(url, headers=headers, data=data)
-        self.access_token = r.json()['access_token']
+        r = requests.post(self.access_token_endpoint, headers=headers, data=data)
+        self.client_access_token = r.json()['access_token']
         return
         
-    def get_products(self, ID='70300044'):
-        # Get Products
+    def get_profile_id(self):
         headers = {
-            'Authorization':f'Bearer {self.access_token}',
+            'Authorization': 'Bearer %s' %(self.customer_access_token),
+            'Cache-Control':'no-cache'
+            }
+        r = requests.get(self.profile_endpoint, headers=headers)
+        return r.json()['data']['id']
+        
+   
+    def get_product_name(self, productID):
+        headers = {
+            'Authorization':f'Bearer {self.client_access_token}',
             'Cache-Control':'no-cache'
             }
         
-        url_stub = 'https://api-ce.kroger.com/v1/products?'
+        params = {
+            'id':productID
+            }
+        url = self.products_endpoint + '&'.join(['='.join([key,value]) for key,value in params.items()])
+        r = requests.get(url, headers=headers).json()
+        
+        
+        
+        return
+    
+    def get_products(self, ID='70300044'):
+        # Get Products
+        headers = {
+            'Authorization':f'Bearer {self.client_access_token}',
+            'Cache-Control':'no-cache'
+            }
+        
         params = {
             'filter.locationId':str(ID),
             'filter.term':'milk',
             'filter.limit':'10'
             }
-        url = url_stub + '&'.join(['='.join([key,value]) for key,value in params.items()])
+        url = self.products_endpoint + '&'.join(['='.join([key,value]) for key,value in params.items()])
         r = requests.get(url, headers=headers).json()
         products = r['data']
         self.products = products
@@ -80,15 +164,14 @@ class Kroger():
     def get_locations(self, zipcode='90049'):
         # Get Locations
         headers = {
-            'Authorization':f'Bearer {self.access_token}',
+            'Authorization':f'Bearer {self.client_access_token}',
             'Cache-Control':'no-cache'
             }
         
-        url_stub = 'https://api-ce.kroger.com/v1/locations?'
         params = {
             'filter.zipCode.near':str(zipcode)
             }
-        url = url_stub + '&'.join(['='.join([key,value]) for key,value in params.items()])
+        url = self.locations_endpoint + '&'.join(['='.join([key,value]) for key,value in params.items()])
         r = requests.get(url, headers=headers).json()
         locations = r['data']
 
@@ -105,9 +188,8 @@ class Kroger():
         pd.DataFrame(data).T.to_csv('locations.csv')
         return
     
-    def get_oauth(self):
+    def authenticate_customer(self):
         # Build oauth url
-        url_stub = 'https://api-ce.kroger.com/v1/connect/oauth2/authorize?'
         headers = {
             'Content-Type':'application/x-www-form-urlencoded'
             }
@@ -115,24 +197,17 @@ class Kroger():
                 'scope':'profile.compact',
                 'response_type':'code',
                 'client_id':self.CLIENT_ID,
-                'redirect_uri':'https://localhost/'
+                'redirect_uri':self.REDIRECT_URI
                 }
-        url = url_stub + '&'.join([key+'='+value for key,value in params.items()])
-        self.url = url
+        url = self.oauth2_endpoint + '&'.join([key+'='+value for key,value in params.items()])
         
-        # # Use selenium to login and provide authorization to download activities
-        driver = webdriver.Chrome(ChromeDriverManager().install()) 
-        driver.get(url)
-        driver.find_elements(by='id', value='username')[0].send_keys(self.EMAIL)
-        driver.find_elements(by='id', value='password')[0].send_keys(self.PASSWORD)
-        driver.find_elements(by='id', value='signin_button')[0].click()
-        driver.find_elements(by='id', value='authorize')[0].click()
-        #     response_url = driver.current_url
+        print(f'Authorization URL: {url}')
+        self.customer_oauth2_token = input('Enter redirect URL: ').split('code=')[1]
         
         return 
 
 if __name__=='__main__':
     a = Kroger()
-    a.get_oauth()
+
 
 
