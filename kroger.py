@@ -17,7 +17,6 @@ import concurrent.futures
 from datetime import datetime
 
 # TO IMPLEMENT:
-    # Clean up '?' in endpoitns...
 
 
 class Kroger():
@@ -99,7 +98,7 @@ class Kroger():
         # Desired links of form: href="/p/Description/ID"
         IDs = [link.split('/')[3] for link in links if link.split('/')[3].isdigit()]
         print(f'Found IDs: {len(IDs)}')
-        IDs = IDs[:5] #limit calls while troubleshooting
+        # IDs = IDs[:5] #limit calls while troubleshooting
         
         # Get product names
         def get_product_name(ID):
@@ -120,7 +119,7 @@ class Kroger():
         self.load_product_data()
         pd = self.product_data
         
-        date = datetime.today().strftime('%Y-%m-%d-%H-%M-%S')
+        date = datetime.today().strftime('%Y-%m-%d')
         if date in pd.index.get_level_values(level=0):
             print('Prices already checked today')
             return
