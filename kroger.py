@@ -17,6 +17,7 @@ import concurrent.futures
 from datetime import datetime
 
 # TO IMPLEMENT:
+    # When product_data.csv is saved, it changes dates to string and ID to int.
 
 
 class Kroger():
@@ -77,7 +78,11 @@ class Kroger():
         
     def load_product_data(self):
         if os.path.exists('product_data.csv'):
-            self.product_data = pd.read_csv('product_data.csv', index_col=[0,1])
+            prod_df = pd.read_csv('product_data.csv')
+            prod_df.Date = prod_df.Date.apply(lambda x: datetime.strptime(x, '%m/%d/%Y'))
+            prod_df.set_index(['Date','Category'], inplace=True)
+            prod_df.columns = prod_df.columns.str.zfill(13)
+            self.product_data = prod_df
         else:
             categories = ['inventory','price','sale_price']
             index = pd.MultiIndex.from_product([[],categories])
@@ -117,10 +122,10 @@ class Kroger():
     def update_product_data(self):
         self.load_product_list()
         self.load_product_data()
-        pd = self.product_data
+        prod_df = self.product_data
         
         date = datetime.today().strftime('%Y-%m-%d')
-        if date in pd.index.get_level_values(level=0):
+        if date in prod_df.index.get_level_values(level=0):
             print('Prices already checked today')
             return
         
@@ -129,13 +134,13 @@ class Kroger():
             
             if 'inventory' in data.keys():
                 stock_level = data['inventory']['stockLevel']
-                pd.loc[(date,'inventory'),ID] = stock_level
+                prod_df.loc[(date,'inventory'),ID] = stock_level
                 
             if 'price' in data.keys():
                 price = data['price']['regular']
                 sale_price = data['price']['promo']
-                pd.loc[(date,'price'),ID] = price
-                pd.loc[(date,'sale_price'),ID] = sale_price
+                prod_df.loc[(date,'price'),ID] = price
+                prod_df.loc[(date,'sale_price'),ID] = sale_price
                 
             return 
 
@@ -143,11 +148,12 @@ class Kroger():
         with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.map(read_product_data, self.IDs)
             
-        pd.to_csv('product_data.csv')
+        prod_df.reset_index().to_csv('product_data.csv', index=False)
 
+        
 
 if __name__=='__main__':
-    Kroger()
+    k = Kroger()
 
 
 
