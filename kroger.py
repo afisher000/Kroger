@@ -79,7 +79,14 @@ class Kroger():
     def load_product_data(self):
         if os.path.exists('product_data.csv'):
             prod_df = pd.read_csv('product_data.csv')
-            prod_df.Date = prod_df.Date.apply(lambda x: datetime.strptime(x, '%m/%d/%Y'))
+            
+            # Date format changes if csv is manually opened/saved
+            if prod_df.Date.iloc[0].find('-')!=-1:
+                date_format = '%Y-%m-%d'
+            else:
+                date_format = '%m/%d/%Y'
+            prod_df.Date = prod_df.Date.apply(lambda x: datetime.strptime(x, date_format))
+            
             prod_df.set_index(['Date','Category'], inplace=True)
             prod_df.columns = prod_df.columns.str.zfill(13)
             self.product_data = prod_df
