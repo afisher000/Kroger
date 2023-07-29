@@ -1,28 +1,27 @@
 ,price,sale_price,price_drop,pct_change,name
-0001111041375,2.79,2.69,0.10000000000000009,0.04,Ralphs® 2% Reduced Fat Milk
-0001111050176,3.69,3.5,0.18999999999999995,0.05,Kroger® Nacho & Taco Blend Shredded Cheese
-0002410078895,4.29,3.99,0.2999999999999998,0.07,Cheez-It DUOZ Cheese Crackers Cheddar and Parmesan
-0001111081018,1.09,1.0,0.09000000000000008,0.08,Kroger® Petite Diced Tomatoes in Tomato Juice
-0004157359131,5.49,4.99,0.5,0.09,Bakery Fresh Goodness Double Chocolate Chip Cookies
+0003500047013,2.49,0.99,1.5000000000000002,0.6,Colgate® Plus Clean and Fresh Soft Manual Toothbrush
+0002220094020,3.79,1.5,2.29,0.6,Speed Stick® Regular Deodorant
+0003500051406,2.99,1.25,1.7400000000000002,0.58,Colgate® Cavity Protection Regular Flavor Anticavity Fluoride Toothpaste
+0004610000113,3.99,3.0,0.9900000000000002,0.25,Sargento® Natural Sharp Cheddar Cheese Slices
+0000000004080,3.99,2.99,1.0,0.25,Green Asparagus
+0004610000122,3.99,3.0,0.9900000000000002,0.25,Sargento® Natural Pepper Jack Cheese Slices
+0004610000268,3.99,3.0,0.9900000000000002,0.25,Sargento® Natural Colby-Pepper Jack Cheese Slices
+0007585601113,5.29,4.0,1.29,0.24,Klondike® Heath Ice Cream Bars Frozen Dessert No Artificial Growth Hormones & Certified Kosher
+0001376402705,7.79,5.99,1.7999999999999998,0.23,Dave's Killer Bread 21 Whole Grains and Seeds Whole Grain Organic Bread
+0004411540304,4.49,3.49,1.0,0.22,Cedar's Topped Organic Roasted Red Pepper Hommus
+0007794800903,2.39,1.88,0.5100000000000002,0.21,Calidad White Corn Tortilla Chips
+0007794800907,2.39,1.88,0.5100000000000002,0.21,Calidad White Corn Tortilla Chips
+0004157322510,2.49,2.0,0.4900000000000002,0.2,Bakery Fresh Goodness French Bread
+0001111087397,5.99,4.99,1.0,0.17,Kroger® Self-Rising Crust Four Cheese Frozen Pizza
+0001111050176,3.69,3.29,0.3999999999999999,0.11,Kroger® Nacho & Taco Blend Shredded Cheese
 0001070008813,1.39,1.25,0.1399999999999999,0.1,GOOD & PLENTY Licorice Candy Box
 0003400011470,1.39,1.25,0.1399999999999999,0.1,REESE'S PIECES Peanut Butter in a Crunchy Shell Candy Box
-0007218063983,7.29,6.49,0.7999999999999998,0.11,Freschetta® Naturally Rising Crust Four Cheese Frozen Pizza
-0001111058718,3.99,3.5,0.4900000000000002,0.12,Kroger® Medium Cheddar Cheese Slices
-0007218063429,5.79,4.99,0.7999999999999998,0.14,Red Baron® Classic Crust Four Cheese Frozen Pizza
-0002898910102,5.49,4.67,0.8200000000000003,0.15,MorningStar Farms Meatless Chicken Patties Original
-0007794800907,2.39,1.99,0.40000000000000013,0.17,Calidad White Corn Tortilla Chips
-0001111087397,5.99,4.99,1.0,0.17,Kroger® Self-Rising Crust Four Cheese Frozen Pizza
-0007794800903,2.39,1.99,0.40000000000000013,0.17,Calidad White Corn Tortilla Chips
-0004400006925,4.29,3.5,0.79,0.18,Wheat Thins Reduced Fat Whole Grain Wheat Crackers
-0004157322510,2.49,2.0,0.4900000000000002,0.2,Bakery Fresh Goodness French Bread
-0000000004038,2.49,1.99,0.5000000000000002,0.2,Yellow Peaches
-0004411540304,4.49,3.49,1.0,0.22,Cedar's Topped Organic Roasted Red Pepper Hommus
-0001376402705,7.79,5.99,1.7999999999999998,0.23,Dave's Killer Bread 21 Whole Grains and Seeds Whole Grain Organic Bread
-0002840051685,5.59,3.99,1.5999999999999996,0.29,Ruffles® Sour Cream & Onion Flavored Potato Chips
-0004900007940,1.5,1.0,0.5,0.33,Powerade Grape Sports Drink
-0000000004023,2.99,1.99,1.0000000000000002,0.33,Red Seedless Grapes
-0004900007934,1.5,1.0,0.5,0.33,POWERADE Zero Fruit Punch Sports Drink
-0004900007932,1.5,1.0,0.5,0.33,POWERADE Zero Mixed Berry Sports Drink
-0003500051406,2.49,1.49,1.0000000000000002,0.4,Colgate® Cavity Protection Regular Flavor Anticavity Fluoride Toothpaste
-0000000004080,3.49,1.99,1.5000000000000002,0.43,Green Asparagus
-0002220094020,3.79,1.5,2.29,0.6,Speed Stick® Regular Deodorant
+0004157359131,5.49,4.99,0.5,0.09,Bakery Fresh Goodness Double Chocolate Chip Cookies
+0001111042139,1.29,1.19,0.10000000000000009,0.08,Kroger® Natural Spring Water
+0001111081018,1.09,1.0,0.09000000000000008,0.08,Kroger® Petite Diced Tomatoes in Tomato Juice
+0007218063983,7.29,6.79,0.5,0.07,Freschetta® Naturally Rising Crust Four Cheese Frozen Pizza
+0001600043101,7.49,6.99,0.5,0.07,Nature Valley Oats and Honey Crunchy Granola Bars Value Pack
+0004470003050,5.79,5.49,0.2999999999999998,0.05,Oscar Mayer Deli Fresh Oven Roasted Turkey Breast Sliced Lunch Meat
+0004470003053,5.79,5.49,0.2999999999999998,0.05,Oscar Mayer Deli Fresh Smoked Turkey Breast Sliced Lunch Meat
+0007218063429,5.79,5.49,0.2999999999999998,0.05,Red Baron® Classic Crust Four Cheese Frozen Pizza
+0001111041375,2.79,2.69,0.10000000000000009,0.04,Ralphs® 2% Reduced Fat Milk

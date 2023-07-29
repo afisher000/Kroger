@@ -85,7 +85,7 @@ class Kroger():
                 date_format = '%Y-%m-%d'
             else:
                 date_format = '%m/%d/%Y'
-            prod_df.Date = prod_df.Date.apply(lambda x: datetime.strptime(x, date_format))
+            #prod_df.Date = prod_df.Date.apply(lambda x: datetime.strptime(x, date_format))
             
             prod_df.set_index(['Date','Category'], inplace=True)
             prod_df.columns = prod_df.columns.str.zfill(13)
